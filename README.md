@@ -1,3 +1,5 @@
+# Deployments configurations
+
 First we start dns with:
 $ podman play kube dns/dns.yml
 
@@ -18,3 +20,7 @@ copy the service file to `~/.config/systemd/user/`
 systemctl --user daemon-reload
 systemctl --user enable nextcloud --now
 ```
+
+## DNS
+
+update the dyndns-config before starting the service

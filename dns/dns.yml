@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: dns
+  name: dns
+spec:
+  hostNetwork: true
+  containers:
+  - name: service
+    image: registry.hub.docker.com/slangenmaier/hobo-ddclient:latest
+    volumeMounts:
+    - mountPath: /etc/dyndns-config
+      name: home-pi-deployments-dyndns-config
+      readOnly: true
+  volumes:
+  - name: home-pi-deployments-dyndns-config
+    hostPath:
+      path: /home/pi/deployments/dns/ddclient/dyndns-config
+      type: File

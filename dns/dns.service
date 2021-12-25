@@ -1,0 +1,19 @@
+[Unit]
+Description=Podman pod-dns.service
+
+[Service]
+Restart=on-failure
+RestartSec=30
+Type=simple
+RemainAfterExit=yes
+TimeoutStartSec=30
+
+ExecStartPre=/usr/bin/podman pod rm -f -i dns
+ExecStart=/usr/bin/podman play kube \
+  /home/pi/deployments/dns/dns.yml
+
+ExecStop=/usr/bin/podman pod stop dns
+ExecStopPost=/usr/bin/podman pod rm dns
+
+[Install]
+WantedBy=default.target
