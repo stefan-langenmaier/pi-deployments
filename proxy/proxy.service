@@ -1,0 +1,19 @@
+[Unit]
+Description=Podman pod-proxy.service
+
+[Service]
+Restart=on-failure
+RestartSec=30
+Type=simple
+RemainAfterExit=yes
+TimeoutStartSec=30
+
+ExecStartPre=/usr/bin/podman pod rm -f -i proxy
+ExecStart=/usr/bin/podman play kube \
+  /home/pi/deployments/proxy/proxy.yml
+
+ExecStop=/usr/bin/podman pod stop proxy
+ExecStopPost=/usr/bin/podman pod rm proxy
+
+[Install]
+WantedBy=default.target

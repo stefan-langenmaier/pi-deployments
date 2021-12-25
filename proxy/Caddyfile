@@ -1,0 +1,6 @@
+v2.langenmaier.net {
+    rewrite /.well-known/carddav /remote.php/dav
+    rewrite /.well-known/caldav /remote.php/dav
+
+    reverse_proxy 192.168.178.45:8080 # the ip is hardcoded
+}
