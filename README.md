@@ -12,13 +12,13 @@ $ podman play kube nextcloud/nextcloud.yml
 
 ## Service installation
 
-copy the service file to `~/.config/systemd/user/`
+copy the service files to `~/.config/systemd/user/`
 
 ### enable service
 
 ```shell
 systemctl --user daemon-reload
-systemctl --user enable nextcloud --now
+systemctl --user enable nextcloud@sontheim --now
 ```
 
 ## DNS
