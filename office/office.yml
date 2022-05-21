@@ -9,7 +9,7 @@ spec:
   - name: service
     env:
     - name: aliasgroup1
-      value: 'https://cloud\\.langenmaier\\.net:443,https://owncloud\\.langenmaier\\.net:443'
+      value: 'https://cloud.langenmaier.net:443'
     - name: extra_params
       value: '--o:ssl.enable=false --o:ssl.termination=true'
     image: registry.hub.docker.com/collabora/code:21.11.4.2.1
@@ -19,18 +19,10 @@ spec:
       protocol: TCP
     securityContext:
       allowPrivilegeEscalation: true
-      capabilities:
-        add:
-        - CAP_MKNOD
-        drop:
-        - CAP_NET_RAW
-        - CAP_AUDIT_WRITE
-      privileged: false
+      privileged: true
       readOnlyRootFilesystem: false
       runAsGroup: 106
       runAsUser: 104
       seLinuxOptions: {}
     tty: true
     resources: {}
-    command:
-    - /start-collabora-online.sh
