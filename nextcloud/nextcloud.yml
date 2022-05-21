@@ -33,14 +33,16 @@ spec:
         configMapKeyRef:
           name: nextcloud-config
           key: MYSQL_PASSWORD
-    image: docker.io/library/mariadb:10.5
+    image: docker.io/library/mariadb:10.5 # latest supported version: https://github.com/nextcloud/server/issues/25436
+    ports:
+    - containerPort: 3306
+      hostPort: 3306
+      protocol: TCP
     volumeMounts:
     - mountPath: /var/lib/mysql
       name: home-pi-deployments-nextcloud-data-db
   - name: app
     env:
-#    - name: REDIS_HOST_PASSWORD
-#      value: +HZsGCIxzmWXtwoogEkheB2PlJDXCOWHDWqwMlS76ueOAERbo11RPQ==
     - name: MYSQL_HOST
       value: 127.0.0.1
     - name: MYSQL_DATABASE
@@ -60,20 +62,24 @@ spec:
         configMapKeyRef:
           name: nextcloud-config
           key: MYSQL_PASSWORD
-    image: registry.hub.docker.com/library/nextcloud:stable
+    image: registry.hub.docker.com/library/nextcloud:23
     ports:
     - containerPort: 80
       hostPort: 8080
       protocol: TCP
     volumeMounts:
+    - mountPath: /var/www/html/custom_apps
+      name: home-pi-deployments-nextcloud-custom-apps
+    - mountPath: /var/www/html/config
+      name: home-pi-deployments-nextcloud-config
+    - mountPath: /var/www/html/data
+      name: home-pi-deployments-nextcloud-data
     - mountPath: /var/www/html
-      name: home-pi-deployments-nextcloud-data-html
+      name: home-pi-deployments-nextcloud-app
     workingDir: /var/www/html
   - name: cache
     command:
     - redis-server
-#    - --requirepass
-#    - okCH6R/qtzvn+f/gnvuadt++/9CDGx1n+mYCfRIBPk9WvN31/QK3Yg==
     image: docker.io/library/redis:alpine
     volumeMounts:
     - mountPath: /tmp
@@ -84,21 +90,39 @@ spec:
       name: tmpfs
     workingDir: /data
   - name: cron
-    image: registry.hub.docker.com/library/nextcloud:stable
+    image: registry.hub.docker.com/library/nextcloud:23
     command: ["/cron.sh"]
     volumeMounts:
+    - mountPath: /var/www/html/custom_apps
+      name: home-pi-deployments-nextcloud-custom-apps
+    - mountPath: /var/www/html/config
+      name: home-pi-deployments-nextcloud-config
+    - mountPath: /var/www/html/data
+      name: home-pi-deployments-nextcloud-data
     - mountPath: /var/www/html
-      name: home-pi-deployments-nextcloud-data-html
+      name: home-pi-deployments-nextcloud-app
     workingDir: /var/www/html
   volumes:
   - hostPath:
-      path: /home/pi/data/nextcloud/data/db
+      path: /mnt/full-data/vols/nextcloud-db
       type: Directory
     name: home-pi-deployments-nextcloud-data-db
   - hostPath:
-      path: /home/pi/data/nextcloud/data/html
+      path: /mnt/full-data/vols/nextcloud-custom-apps
       type: Directory
-    name: home-pi-deployments-nextcloud-data-html
+    name: home-pi-deployments-nextcloud-custom-apps
+  - hostPath:
+      path: /mnt/full-data/vols/nextcloud-config
+      type: Directory
+    name: home-pi-deployments-nextcloud-config
+  - hostPath:
+      path: /mnt/full-data/vols/nextcloud-data
+      type: Directory
+    name: home-pi-deployments-nextcloud-data
+  - hostPath:
+      path: /mnt/full-data/vols/nextcloud-app
+      type: Directory
+    name: home-pi-deployments-nextcloud-app
   - hostPath:
       path: /dev/shm/nextcloud-tmpfs
       type: DirectoryOrCreate
