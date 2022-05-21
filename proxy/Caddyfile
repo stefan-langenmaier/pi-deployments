@@ -1,6 +1,17 @@
-v2.langenmaier.net {
-    rewrite /.well-known/carddav /remote.php/dav
-    rewrite /.well-known/caldav /remote.php/dav
+cloud.langenmaier.net, owncloud.langenmaier.net {
+  rewrite /.well-known/carddav /remote.php/dav
+  rewrite /.well-known/caldav /remote.php/dav
 
-    reverse_proxy 192.168.178.45:8080 # the ip is hardcoded
+  header {
+    # enable HSTS
+    Strict-Transport-Security max-age=31536000;
+  }
+
+  reverse_proxy 192.168.178.45:8080 # the ip is hardcoded
+}
+
+office.langenmaier.net {
+  encode gzip
+
+  reverse_proxy http://192.168.178.45:9980
 }

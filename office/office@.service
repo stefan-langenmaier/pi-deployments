@@ -1,0 +1,19 @@
+[Unit]
+Description=Podman pod-office.service
+
+[Service]
+Restart=on-failure
+RestartSec=30
+Type=simple
+RemainAfterExit=yes
+TimeoutStartSec=30
+
+ExecStartPre=/usr/bin/podman pod rm -f -i office
+ExecStart=/usr/bin/podman play kube \
+  /home/pi/deployments/office/office.yml
+
+ExecStop=/usr/bin/podman pod stop office
+ExecStopPost=/usr/bin/podman pod rm office
+
+[Install]
+WantedBy=default.target
