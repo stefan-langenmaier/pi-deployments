@@ -1,0 +1,38 @@
+# Fresh setup on a new Pi
+
+* Download image from here: https://raspi.debian.net/
+* Flash image
+* See FAQ and add pub key in sysconf.txt
+
+## Boot
+
+* Connect to network
+* Power Pi on
+* Connect with ssh as root
+
+## Manual first configuration
+
+* apt update
+* apt upgrade
+* systemctl disable rpi-set-sysconf
+* hostnamectl set-hostname rpi-vfl
+* hostnamectl set-location vfl
+* echo net.ipv4.ip_unprivileged_port_start=80 >> /etc/sysctl.conf
+* useradd -m -s /bin/bash service
+* useradd -m -s /bin/bash internal
+* ssh-keygen
+* update sshd_config
+* apt install git podman htop iotop
+* loginctl enable-linger service
+* loginctl enable-linger internal
+* reboot
+
+## Prepare deployments
+
+
+
+## Production
+
+* verify fstab
+* update dns config
+* check if it's reboot safe
